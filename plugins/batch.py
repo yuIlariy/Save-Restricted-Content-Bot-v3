@@ -7,7 +7,7 @@ from pyrogram import Client as C, filters as F
 from pyrogram.types import Message as M
 from config import API_ID as A, API_HASH as H, LOG_GROUP, STRING
 from utils.func import get_user_data
-from utils.func import screenshot, thumbnail, get_video_metadata, get_user_data_key, process_text_with_rules, is_premium_user
+from utils.func import screenshot, thumbnail, get_video_metadata, get_user_data_key, process_text_with_rules, is_premium_user, E
 from shared_client import app as X
 from plugins.settings import rename_file
 from utils.custom_filters import login_in_progress
@@ -15,12 +15,7 @@ from plugins.start import subscribe
 
 Y = None if not STRING else __import__('shared_client').userbot
 Z, W, P = {}, {}, {}
-def E(L):
-    """Extract chat ID and message ID from Telegram links"""
-    Q = R.match('https://t\\.me/c/(\\d+)/(\\d+)', L)
-    P = R.match('https://t\\.me/([^/]+)/(\\d+)', L)
-    return (f'-100{Q.group(1)}', int(Q.group(2)), 'private') if Q else (P.
-        group(1), int(P.group(2)), 'public') if P else (None, None, None)
+
 async def update_dialogs(client):
     """Update client dialogs to avoid peer connect errors"""
     try:
@@ -30,6 +25,7 @@ async def update_dialogs(client):
     except Exception as e:
         print(f'Failed to update dialogs: {e}')
         return False
+        
 async def J(C, U, I, D, link_type):
     """Fetch message from source with enhanced peer resolution"""
     try:
@@ -134,12 +130,12 @@ async def K(c, t, C, h, m, start_time):
         eta = time.strftime('%M:%S', time.gmtime((t - c) / (speed * 1024 * 
             1024))) if speed > 0 else '00:00'
         await C.edit_message_text(h, m,
-            f"""__**Pyro Handler...**__\n\n
+            f"""__**Pyro Handler...**__\n
 {bar}
 ⚡**__Completed__**: {c_mb:.2f} MB / {t_mb:.2f} MB
 📊 **__Done__**: {p:.2f}%
 🚀 **__Speed__**: {speed:.2f} MB/s
-⏳ **__ETA__**: {eta}\n\n
+⏳ **__ETA__**: {eta}\n
 **__Powered by Team SPY__**"""
             )
         if p >= 100:
@@ -339,9 +335,15 @@ async def send_via_file_id(C, m, target_chat_id, final_text=None,
     except Exception as e:
         print(f'Direct send error: {e}')
         return False
+    
 @X.on_message(F.command('batch'))
 async def batch_cmd(C, m: M):
     U = m.from_user.id
+    
+    subscription_status = await subscribe(C, m)
+    if subscription_status == 1:
+        return
+    
     if not await is_premium_user(U):
         await m.reply_text(
             'You need premium for this operation send /pay to proceed for payment'
@@ -357,6 +359,10 @@ async def batch_cmd(C, m: M):
 @X.on_message(F.command('single'))
 async def single_cmd(C, m: M):
     U = m.from_user.id
+    subscription_status = await subscribe(C, m)
+    if subscription_status == 1:
+        return
+    
     if not await is_premium_user(U):
         await m.reply_text(
             'You need premium for this operation send /pay to proceed for payment'
