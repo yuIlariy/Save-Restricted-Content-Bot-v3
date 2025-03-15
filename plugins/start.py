@@ -4,15 +4,14 @@
 
 from shared_client import app
 from pyrogram import filters
-from config import FORCE_SUB
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
-from config import LOG_GROUP, OWNER_ID
+from config import LOG_GROUP, OWNER_ID, FORCE_SUB
 
 async def subscribe(app, message):
     if FORCE_SUB:
         try:
-          user = await app.get_chat_member(LOG_GROUP, message.from_user.id)
+          user = await app.get_chat_member(FORCE_SUB, message.from_user.id)
           print(user)
           if str(user.status) == "ChatMemberStatus.BANNED":
               await message.reply_text("You are Banned. Contact -- Team SPY")
