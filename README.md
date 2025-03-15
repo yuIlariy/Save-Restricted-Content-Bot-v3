@@ -1,5 +1,5 @@
 <h1 align="center">
-  Winter Release v3
+  Save Restricted Content Bot v3
 </h1>
 
 [Telegram](https://t.me/save_restricted_content_bots) | [See Recent Updates](https://github.com/devgaganin/Save-Restricted-Content-Bot-V2/tree/v3#updates)
