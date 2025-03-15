@@ -190,7 +190,7 @@ Visit the [Terms of Use](https://github.com/devgaganin/Save-Restricted-Content-B
 **Note**: Changing the terms and commands doesn't magically make you a developer. Real development involves understanding the code, writing new functionalities, and debugging issues, not just renaming things. If only it were that easy!
 
 
-<h1 align="center">
-  Developed with ❤️ by [Gagan](https://t.me/team_spy_pro)
-</h1>
+<h3 align="center">
+  Developed with ❤️ by <a href="https://t.me/team_spy_pro"> Gagan </a>
+</h3>
 
