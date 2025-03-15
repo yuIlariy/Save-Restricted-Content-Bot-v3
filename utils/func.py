@@ -41,6 +41,15 @@ def thumbnail(sender):
 def hhmmss(seconds):
     return time.strftime('%H:%M:%S', time.gmtime(seconds))
 
+def E(L):  
+    private_match = re.match(r'https://t\.me/c/(\d+)/(?:\d+/)?(\d+)', L)
+    public_match = re.match(r'https://t\.me/([^/]+)/(?:\d+/)?(\d+)', L)   
+    if private_match:
+        return f'-100{private_match.group(1)}', int(private_match.group(2)), 'private'
+    elif public_match:
+        return public_match.group(1), int(public_match.group(2)), 'public'   
+    return None, None, None
+
 # Helper function to get display name
 def get_display_name(user):
     """Get the display name for a user"""
