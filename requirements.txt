@@ -1,0 +1,17 @@
+telethon
+python-dotenv
+psutil
+opencv-python-headless
+aiofiles
+ggnpyro
+aiohttp
+telethon-tgcrypto
+motor
+pymongo
+pytz
+Pillow
+tgcrypto
+flask
+werkzeug==2.2.2
+mutagen
+yt-dlp
