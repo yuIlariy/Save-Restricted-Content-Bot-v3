@@ -270,6 +270,9 @@ async def V(C, U, m, d, link_type, u):
 async def get_user_client(user_id):
     """Get or create user client"""
     user_data = await get_user_data(user_id)
+    if not user_data:  # fixing kr ths nonetype
+        print(f"User data not found for user_id: {user_id}")
+        return X
     session_string = user_data.get('session_string')
     ss_name = f'{user_id}_bot'
     if session_string:
