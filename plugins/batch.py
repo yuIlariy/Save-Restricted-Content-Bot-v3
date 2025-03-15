@@ -14,7 +14,9 @@ from utils.custom_filters import login_in_progress
 from plugins.start import subscribe
 
 Y = None if not STRING else __import__('shared_client').userbot
+
 Z, W, P = {}, {}, {}
+
 
 async def update_dialogs(client):
     """Update client dialogs to avoid peer connect errors"""
@@ -25,7 +27,6 @@ async def update_dialogs(client):
     except Exception as e:
         print(f'Failed to update dialogs: {e}')
         return False
-        
 async def J(C, U, I, D, link_type):
     """Fetch message from source with enhanced peer resolution"""
     try:
@@ -335,11 +336,9 @@ async def send_via_file_id(C, m, target_chat_id, final_text=None,
     except Exception as e:
         print(f'Direct send error: {e}')
         return False
-    
 @X.on_message(F.command('batch'))
 async def batch_cmd(C, m: M):
     U = m.from_user.id
-    
     subscription_status = await subscribe(C, m)
     if subscription_status == 1:
         return
@@ -362,7 +361,6 @@ async def single_cmd(C, m: M):
     subscription_status = await subscribe(C, m)
     if subscription_status == 1:
         return
-    
     if not await is_premium_user(U):
         await m.reply_text(
             'You need premium for this operation send /pay to proceed for payment'
