@@ -65,7 +65,7 @@ async def handle_login_steps(client, message):
                 set_user_step(user_id, STEP_CODE)
                 await edit_message_safely(status_msg,
                     """✅ Verification code sent to your Telegram account.
-Please enter the code you received:"""
+Please enter the code you received like 1 2 3 4 5 (i.e seperated by space):"""
                     )
             except BadRequest as e:
                 await edit_message_safely(status_msg,
@@ -88,8 +88,7 @@ Please try again with /login.""")
                 login_cache.pop(user_id, None)
                 login_cache[user_id] = {'status_msg': temp_status_msg}
                 await edit_message_safely(status_msg,
-                    """✅ Success! Your session has been saved to the database.
-You can now use the bot that requires this session."""
+                    """✅ Logged in successfully!!"""
                     )
                 set_user_step(user_id, None)
             except SessionPasswordNeeded:
@@ -117,8 +116,7 @@ Please enter your password:"""
                 login_cache.pop(user_id, None)
                 login_cache[user_id] = {'status_msg': temp_status_msg}
                 await edit_message_safely(status_msg,
-                    """✅ Success! Your session has been saved to the database.
-You can now use the bot that requires this session."""
+                    """✅ Logged in successfully!!"""
                     )
                 set_user_step(user_id, None)
             except BadRequest as e:
@@ -193,7 +191,7 @@ Still removing from database..."""
             await temp_client.disconnect()
         await remove_user_session(user_id)
         await edit_message_safely(status_msg,
-            '✅ Session removed from database successfully.')
+            '✅ Logged out successfully!!')
     except Exception as e:
         logger.error(f'Error in logout command: {str(e)}')
         await edit_message_safely(status_msg,
