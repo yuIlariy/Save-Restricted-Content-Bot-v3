@@ -384,14 +384,19 @@ async def cancel_cmd(C, m: M):
         await m.reply_text('Cancelling...')
     else:
         await m.reply_text('No active task.')
-@X.on_message(F.text & ~login_in_progress & ~F.command(['start', 'batch',
-    'cancel', 'login', 'logout', 'stop', 'set', 'pay', 'redeem', 'gencode',
-    'single']))
+
+
+
+@X.on_message(F.text & ~login_in_progress & ~F.command([
+    'start', 'batch', 'cancel', 'login', 'logout', 'stop', 'set', 
+    'pay', 'redeem', 'gencode', 'single']))
 async def text_handler(C, m: M):
     U = m.from_user.id
     if U not in Z:
         return
+
     S = Z[U].get('step')
+
     if S == 'start':
         L = m.text
         I, D, link_type = E(L)
@@ -401,6 +406,7 @@ async def text_handler(C, m: M):
             return
         Z[U].update({'step': 'count', 'cid': I, 'sid': D, 'lt': link_type})
         await m.reply_text('How many messages?')
+
     elif S == 'start_single':
         L = m.text
         I, D, link_type = E(L)
@@ -408,76 +414,81 @@ async def text_handler(C, m: M):
             await m.reply_text('Invalid link. Please check the format.')
             Z.pop(U, None)
             return
-        Z[U].update({'step': 'process_single', 'cid': I, 'sid': D, 'lt':
-            link_type})
+
+        Z[U].update({'step': 'process_single', 'cid': I, 'sid': D, 'lt': link_type})
         I, S, link_type = Z[U]['cid'], Z[U]['sid'], Z[U]['lt']
+
         pt = await m.reply_text('Processing...')
         user_client = await get_user_client(U)
         if not user_client:
-            await pt.edit(
-                'Cannot proceed without a user client. Add session or wait for admin to add default userbot.'
-                )
+            await pt.edit('Cannot proceed without a user client. Add session or wait for admin to add default userbot.')
             Z.pop(U, None)
             return
         if U in W:
-            await pt.edit(
-                'You already have an active task. Please wait or use /cancel.')
+            await pt.edit('You already have an active task. Please wait or use /cancel.')
             Z.pop(U, None)
             return
+
         W[U] = {'cancel': False}
         try:
             msg = await J(C, user_client, I, S, link_type)
             if msg:
-                res = await V(C, user_client, msg, str(m.chat.id), link_type, U
-                    )
+                res = await V(C, user_client, msg, str(m.chat.id), link_type, U)
                 await pt.edit(f'1/1: {res}')
             else:
-                await pt.edit(f'1/1: Message not found')
-        except Exception as e:
-            await m.reply_text(f'Failed: {str(e)}')
+                await pt.edit('1/1: Message not found')
+        except Exception:
+            pass 
         finally:
             W.pop(U, None)
             Z.pop(U, None)
+
     elif S == 'count':
         if not m.text.isdigit():
             await m.reply_text('Enter a valid number.')
             return
+
         D = str(m.chat.id)
         Z[U].update({'step': 'process', 'did': D, 'num': int(m.text)})
         I, S, N, link_type = Z[U]['cid'], Z[U]['sid'], Z[U]['num'], Z[U]['lt']
         R = 0
+
         pt = await m.reply_text('Processing...')
         user_client = await get_user_client(U)
         if not user_client:
-            await pt.edit(
-                'Cannot proceed without a user client. Add session or wait for admin to add default userbot.'
-                )
+            await pt.edit('Cannot proceed without a user client. Add session or wait for admin to add default userbot.')
             Z.pop(U, None)
             return
         if U in W:
-            await pt.edit(
-                'You already have an active task. Please wait or use /cancel.')
+            await pt.edit('You already have an active task. Please wait or use /cancel.')
             Z.pop(U, None)
             return
+
         W[U] = {'cancel': False}
         try:
             for i in range(N):
                 if W.get(U, {}).get('cancel'):
                     await pt.edit(f'Batch cancelled at {i}/{N}')
                     break
+
                 M = S + i
-                msg = await J(C, user_client, I, M, link_type)
-                if msg:
-                    res = await V(C, user_client, msg, D, link_type, U)
-                    await pt.edit(f'{i + 1}/{N}: {res}')
-                    if 'Done' in res or 'Copied' in res or 'Sent' in res:
-                        R += 1
-                else:
-                    await pt.edit(f'{i + 1}/{N}: Message not found')
+                try:
+                    msg = await J(C, user_client, I, M, link_type)
+                    if msg:
+                        res = await V(C, user_client, msg, D, link_type, U)
+                        await pt.edit(f'{i + 1}/{N}: {res}')
+                        if 'Done' in res or 'Copied' in res or 'Sent' in res:
+                            R += 1
+                    else:
+                        await pt.edit(f'{i + 1}/{N}: Message not found')
+                except Exception:
+                    pass 
+                
                 await asyncio.sleep(10)
+
             await m.reply_text(f'Batch Completed ✅\nSuccessful: {R}/{N}')
-        except Exception as e:
-            await m.reply_text(f'Batch failed: {str(e)}')
+        
         finally:
             W.pop(U, None)
             Z.pop(U, None)
+            
