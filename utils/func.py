@@ -5,22 +5,18 @@
 import concurrent.futures
 import time
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo.errors import DuplicateKeyError
 import asyncio
 import os, re
 import cv2
 import logging
 from datetime import datetime, timedelta
+from config import MONGO_URI, DB_NAME
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 PUBLIC_LINK_PATTERN = re.compile(r'(https?://)?(t\.me|telegram\.me)/([^/]+)(/(\d+))?')
 PRIVATE_LINK_PATTERN = re.compile(r'(https?://)?(t\.me|telegram\.me)/c/(\d+)(/(\d+))?')
-
-# MongoDB connection
-MONGO_URI = os.getenv("MONGO_DB", "mongodb+srv://ggn:surabhimusicbot@ggnvv.g6qusje.mongodb.net/?retryWrites=true&w=majority&appName=ggnvv")
-DB_NAME = os.getenv("DB_NAME", "telegram_downloader")
 
 
 # Initialize MongoDB client
@@ -41,14 +37,15 @@ def thumbnail(sender):
 def hhmmss(seconds):
     return time.strftime('%H:%M:%S', time.gmtime(seconds))
 
-def E(L):  
+def E(L):   
     private_match = re.match(r'https://t\.me/c/(\d+)/(?:\d+/)?(\d+)', L)
-    public_match = re.match(r'https://t\.me/([^/]+)/(?:\d+/)?(\d+)', L)   
+    public_match = re.match(r'https://t\.me/([^/]+)/(?:\d+/)?(\d+)', L)
     if private_match:
         return f'-100{private_match.group(1)}', int(private_match.group(2)), 'private'
     elif public_match:
-        return public_match.group(1), int(public_match.group(2)), 'public'   
+        return public_match.group(1), int(public_match.group(2)), 'public'
     return None, None, None
+
 
 # Helper function to get display name
 def get_display_name(user):
