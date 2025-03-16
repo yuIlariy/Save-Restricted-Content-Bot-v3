@@ -419,7 +419,7 @@ async def text_handler(C, m: M):
         try:
             msg = await J(C, user_client, I, S, link_type)
             if msg:
-                res = await V(C, user_client, msg, str(m.chat.id), link_type, U)
+                res = await V(C, user_client, msg, str(m.chat.id), link_type, U, I)
                 await pt.edit(f'1/1: {res}')
             else:
                 await pt.edit('1/1: Message not found')
