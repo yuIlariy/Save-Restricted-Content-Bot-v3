@@ -16,8 +16,7 @@ from pyrogram.enums import ChatType
 
 Y = None if not STRING else __import__('shared_client').userbot
 
-Z, W, P = {}, {}, {}
-
+Z, W, P, emp = {}, {}, {}, {}
 
 async def update_dialogs(client):
     """Update client dialogs to avoid peer connect errors"""
@@ -28,59 +27,23 @@ async def update_dialogs(client):
     except Exception as e:
         print(f'Failed to update dialogs: {e}')
         return False
+        
 async def J(C, U, I, D, link_type):
     """Fetch message from source with enhanced peer resolution"""
     try:
         if link_type == 'public':
             try:
                 xm = await C.get_messages(I, D)
-                print(f"XM HU BRO {xm}")
-                if not xm.media or not xm.text:
-                    try:
-                        await U.join_chat(I)
-                    except Exception:
-                        pass
-                    x_id = await U.get_chat(f"@{I}")
-                    print(x_id)
-                    chatid = x_id.id
-                    xm = await U.get_messages(chatid, D)
+                emp[I] = getattr(xm, "empty", False)
+                if xm.empty:
+                    try: await U.join_chat(I)
+                    except: pass
+                    xm = await U.get_messages((await U.get_chat(f"@{I}")).id, D)
                 return xm
             except Exception as e:
-                print(f'Bot failed to get message: {e}')
-                if U:
-                    try:
-                        async for _ in U.get_dialogs(limit=50):
-                            pass
-                        if not str(I).startswith('-100'):
-                            try:
-                                peer = await U.resolve_peer(I)
-                                chat_id = peer.channel_id if hasattr(peer,
-                                    'channel_id') else peer.user_id if hasattr(
-                                    peer, 'user_id') else None
-                                if not chat_id:
-                                    chat = await U.join_chat(I)
-                                    chat_id = chat.id
-                            except Exception as e:
-                                print(f'Resolve/Join failed: {e}')
-                                try:
-                                    chat = await U.get_chat(I)
-                                    chat_id = chat.id
-                                except Exception as e:
-                                    print(f'Get chat failed: {e}')
-                                    async for _ in U.get_dialogs(limit=100):
-                                        pass
-                                    return await U.get_messages(I, D)
-                        else:
-                            try:
-                                peer = await U.resolve_peer(I)
-                                chat_id = I
-                            except Exception as e:
-                                print(f'Resolve peer for channel failed: {e}')
-                                chat_id = I
-                        return await U.get_messages(chat_id, D)
-                    except Exception as e:
-                        print(f'Userbot also failed: {e}')
-                        return None
+                print(f'Error fetching public message: {e}')
+                return None
+            
         else:
             if U:
                 try:
@@ -121,6 +84,7 @@ async def J(C, U, I, D, link_type):
     except Exception as e:
         print(f'Error fetching message: {e}')
         return None
+        
 async def K(c, t, C, h, m, start_time):
     global P
     p = c / t * 100
@@ -153,7 +117,10 @@ async def K(c, t, C, h, m, start_time):
             )
         if p >= 100:
             P.pop(m, None)
-async def V(C, U, m, d, link_type, u):
+
+# --------------- file processing func ---------------------
+
+async def V(C, U, m, d, link_type, u, I):
     """Process and forward media with direct send for public groups"""
     try:
         configured_chat = await get_user_data_key(d, 'chat_id', None)
@@ -176,7 +143,7 @@ async def V(C, U, m, d, link_type, u):
                 final_text = user_caption
             else:
                 final_text = processed_text
-            if link_type == 'public' and m.chat.type == ChatType.CHANNEL:
+            if link_type == 'public' and not emp.get(I, False):
                 if await send_via_file_id(C, m, target_chat_id, final_text,
                     reply_to_message_id):
                     return 'Media sent directly via file_id.'
@@ -281,13 +248,15 @@ async def V(C, U, m, d, link_type, u):
             return 'Sent.'
     except Exception as e:
         return f'Error: {e}'
+
 async def get_user_client(user_id):
-    """Get or create user client"""
     user_data = await get_user_data(user_id)
+    
     if not user_data:  # fixing kr ths nonetype
         print(f"User data not found for user_id: {user_id}")
         return X
-    session_string = user_data.get('session_string')
+    xxx = user_data.get('session_string')
+    session_string = dcs(xxx)
     ss_name = f'{user_id}_bot'
     if session_string:
         try:
@@ -295,6 +264,7 @@ async def get_user_client(user_id):
                 )
             await gg.start()
             await update_dialogs(gg)
+            print("user's client started")
             return gg
         except Exception as e:
             print(f'User client error: {e}')
@@ -304,11 +274,12 @@ async def get_user_client(user_id):
                 await update_dialogs(Y)
             return Y
     elif Y is None:
+        await prompt_userbot_login(user_id)
         return X
     if Y:
         await update_dialogs(Y)
     return Y
-
+    
 async def prompt_userbot_login(user_id):
     """Prompt user to add session if default userbot not available"""
     chat = await X.get_chat(user_id)
@@ -353,6 +324,7 @@ async def send_via_file_id(C, m, target_chat_id, final_text=None,
     except Exception as e:
         print(f'Direct send error: {e}')
         return False
+        
 @X.on_message(F.command('batch'))
 async def batch_cmd(C, m: M):
     U = m.from_user.id
@@ -390,6 +362,7 @@ async def single_cmd(C, m: M):
         return
     Z[U] = {'step': 'start_single'}
     await m.reply_text('Send the link you want to process.')
+    
 @X.on_message(F.command(['cancel', 'stop']))
 async def cancel_cmd(C, m: M):
     U = m.from_user.id
@@ -398,7 +371,6 @@ async def cancel_cmd(C, m: M):
         await m.reply_text('Cancelling...')
     else:
         await m.reply_text('No active task.')
-
 
 
 @X.on_message(F.text & ~login_in_progress & ~F.command([
@@ -489,7 +461,7 @@ async def text_handler(C, m: M):
                 try:
                     msg = await J(C, user_client, I, M, link_type)
                     if msg:
-                        res = await V(C, user_client, msg, D, link_type, U)
+                        res = await V(C, user_client, msg, D, link_type, U, I)
                         await pt.edit(f'{i + 1}/{N}: {res}')
                         if 'Done' in res or 'Copied' in res or 'Sent' in res:
                             R += 1
