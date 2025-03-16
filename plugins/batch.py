@@ -187,7 +187,7 @@ async def V(C, U, m, d, link_type, u):
             file_size = O.path.getsize(F) / (1024 * 1024 * 1024)
             th = thumbnail(d)
             if file_size > 2 and Y:
-                st = time.time()
+                st = time.time() # fixed uploading speed
                 await C.edit_message_text(d, P.id,
                     'File is larger than 2GB. Sending via alternative method...'
                     )
@@ -225,7 +225,7 @@ async def V(C, U, m, d, link_type, u):
                 W.pop(u, None)
                 return 'Done (Large file sent via alternative method).'
             await C.edit_message_text(d, P.id, 'Uploading...')
-            st = time.time()
+            st = time.time() # uploading time 
             if m.video or O.path.splitext(F)[1].lower() == '.mp4':
                 mtd = await get_video_metadata(F)
                 duration, h, w = mtd['duration'], mtd['width'], mtd['height']
