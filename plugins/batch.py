@@ -12,6 +12,7 @@ from shared_client import app as X
 from plugins.settings import rename_file
 from utils.custom_filters import login_in_progress
 from plugins.start import subscribe
+from pyrogram.enums import ChatType
 
 Y = None if not STRING else __import__('shared_client').userbot
 
@@ -32,7 +33,18 @@ async def J(C, U, I, D, link_type):
     try:
         if link_type == 'public':
             try:
-                return await C.get_messages(I, D)
+                xm = await C.get_messages(I, D)
+                print(f"XM HU BRO {xm}")
+                if not xm.media or not xm.text:
+                    try:
+                        await U.join_chat(I)
+                    except Exception:
+                        pass
+                    x_id = await U.get_chat(f"@{I}")
+                    print(x_id)
+                    chatid = x_id.id
+                    xm = await U.get_messages(chatid, D)
+                return xm
             except Exception as e:
                 print(f'Bot failed to get message: {e}')
                 if U:
@@ -164,7 +176,7 @@ async def V(C, U, m, d, link_type, u):
                 final_text = user_caption
             else:
                 final_text = processed_text
-            if link_type == 'public':
+            if link_type == 'public' and m.chat.type == ChatType.CHANNEL:
                 if await send_via_file_id(C, m, target_chat_id, final_text,
                     reply_to_message_id):
                     return 'Media sent directly via file_id.'
