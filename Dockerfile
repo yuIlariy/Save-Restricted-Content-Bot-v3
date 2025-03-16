@@ -10,4 +10,4 @@ RUN pip3 install --no-cache-dir -U -r requirements.txt
 COPY . .
 EXPOSE 8000
 ENV PORT=8000
-CMD python3 main.py & flask run --host=0.0.0.0 --port=${PORT}
+CMD python3 main.py && flask run --host=0.0.0.0 --port=${PORT}
