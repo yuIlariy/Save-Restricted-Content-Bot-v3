@@ -18,7 +18,7 @@ Please do start and max fork thanks
 ## 🔧 Features
 - Extract content from both public and private channels/groups.
 - Rename and forward content to other channels or users.
-- extract restricted content from other bots how to use format link like `https://b/botusername(without @)/message_id(get it from plus messenger)`
+- extract restricted content from other bots how to use format link like `https://botusername(without @)/message_id(get it from plus messenger)`
 - `/login` method along with `session` based login
 - Custom captions and thumbnails.
 - Auto-remove default video thumbnails.
@@ -31,8 +31,8 @@ Please do start and max fork thanks
 - **Enhanced Timer**: Distinct timers for free and paid users to limit usage and improve service.
 - **Improved Looping**: Optimized looping for processing multiple files or links, reducing delays and enhancing performance.
 - **Premium Access**: Premium users enjoy faster processing speeds and priority queue management.
-- ads setup shorlink ads token system
-- fast uploader via `SpyLib` using Telethon modules and `mautrix bridge repo`
+- ~~ ads setup shorlink ads token system ~~
+- ~~ fast uploader via `SpyLib` using Telethon modules and `mautrix bridge repo` ~~ 
 - Directly upload to `topic` in any topic enabled group
 
   
