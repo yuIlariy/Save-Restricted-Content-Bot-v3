@@ -9,6 +9,7 @@ import logging
 from config import API_HASH, API_ID
 from shared_client import app as bot
 from utils.func import save_user_session, get_user_data, remove_user_session
+from utils.encrypt import ecs, dcs
 from utils.custom_filters import login_in_progress, set_user_step, get_user_step
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,6 +66,7 @@ async def handle_login_steps(client, message):
                 set_user_step(user_id, STEP_CODE)
                 await edit_message_safely(status_msg,
                     """✅ Verification code sent to your Telegram account.
+                    
 Please enter the code you received like 1 2 3 4 5 (i.e seperated by space):"""
                     )
             except BadRequest as e:
@@ -82,7 +84,8 @@ Please try again with /login.""")
                 await edit_message_safely(status_msg, '🔄 Verifying code...')
                 await temp_client.sign_in(phone, phone_code_hash, code)
                 session_string = await temp_client.export_session_string()
-                await save_user_session(user_id, session_string)
+                encrypted_session = ecs(session_string)
+                await save_user_session(user_id, encrypted_session)
                 await temp_client.disconnect()
                 temp_status_msg = login_cache[user_id]['status_msg']
                 login_cache.pop(user_id, None)
@@ -110,7 +113,8 @@ Please enter your password:"""
                     )
                 await temp_client.check_password(text)
                 session_string = await temp_client.export_session_string()
-                await save_user_session(user_id, session_string)
+                encrypted_session = ecs(session_string)
+                await save_user_session(user_id, encrypted_session)
                 await temp_client.disconnect()
                 temp_status_msg = login_cache[user_id]['status_msg']
                 login_cache.pop(user_id, None)
@@ -168,11 +172,13 @@ async def logout_command(client, message):
     status_msg = await message.reply('🔄 Processing logout request...')
     try:
         session_data = await get_user_data(user_id)
+        
         if not session_data or 'session_string' not in session_data:
             await edit_message_safely(status_msg,
                 '❌ No active session found for your account.')
             return
-        session_string = session_data['session_string']
+        encss = session_data['session_string']
+        session_string = dcs(encss)
         temp_client = Client(f'temp_logout_{user_id}', api_id=API_ID,
             api_hash=API_HASH, session_string=session_string)
         try:
