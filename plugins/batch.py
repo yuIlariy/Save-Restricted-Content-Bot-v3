@@ -4,13 +4,14 @@
 
 import os, re, time, asyncio
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import Message
 from pyrogram.errors import UserNotParticipant
 from config import API_ID, API_HASH, LOG_GROUP, STRING, FORCE_SUB, FREEMIUM_LIMIT, PREMIUM_LIMIT
 from utils.func import get_user_data, screenshot, thumbnail, get_video_metadata
 from utils.func import get_user_data_key, process_text_with_rules, is_premium_user, E
 from shared_client import app as X
-from plugins.wtmk import rename_file
+from plugins.settings import rename_file
+from plugins.start import subscribe as sub
 from utils.custom_filters import login_in_progress
 from utils.encrypt import dcs
 import os
@@ -75,22 +76,6 @@ def get_batch_info(user_id: int) -> Optional[Dict[str, Any]]:
 
 ACTIVE_USERS = load_active_users()
 
-async def sub(c, m):
-    if not FORCE_SUB: return
-    try:
-        u = await c.get_chat_member(FORCE_SUB, m.chat.id)
-        if str(u.status) == "ChatMemberStatus.BANNED":
-            await m.reply_text("You are Banned. Contact Team SPY")
-            return 1
-    except UserNotParticipant:
-        caption = "Join our channel to use the bot"
-        await m.reply_photo(photo="https://graph.org/file/d44f024a08ded19452152.jpg", caption=caption, 
-                         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Join Now...", url=f"https://t.me/quiz_zone_new")]]))
-        return 1
-    except Exception:
-        await m.reply_text("Something Went Wrong. Contact admins...")
-        return 1
-
 async def upd_dlg(c):
     try:
         async for _ in c.get_dialogs(limit=100): pass
@@ -111,7 +96,7 @@ async def get_msg(c, u, i, d, lt):
                     xm = await u.get_messages((await u.get_chat(f"@{i}")).id, d)
                 return xm
             except Exception as e:
-                print(f'Error fetching public message: {e}')
+          print(f'Error fetching public message: {e}')
                 return None
         else:
             if u:
