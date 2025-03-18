@@ -17,6 +17,7 @@ Please do start and max fork thanks
 
 ## 🔧 Features
 - Extract content from both public and private channels/groups.
+- Custom bot functionality added use `/setbot`
 - 128 bit encryption for data saving use @v3saverbot on telegram to generate `MASTER_KEY`, `IV_KEY`
 - Rename and forward content to other channels or users.
 - extract restricted content from other bots how to use format link like `https://botusername(without @)/message_id(get it from plus messenger)`
