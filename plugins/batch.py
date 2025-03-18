@@ -319,6 +319,10 @@ async def process_cmd(c, m):
     uid = m.from_user.id
     cmd = m.command[0]
     
+    if FREEMIUM_LIMIT == 0:
+        await m.reply_text("This bot does not provide free servies, get subscription from OWNER")
+        return
+    
     if await sub(c, m) == 1: return
     pro = await m.reply_text('Doing some checks hold on...')
     
