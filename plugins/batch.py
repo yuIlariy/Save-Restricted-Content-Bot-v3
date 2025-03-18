@@ -90,7 +90,7 @@ async def get_msg(c, u, i, d, lt):
             try:
                 xm = await c.get_messages(i, d)
                 emp[i] = getattr(xm, "empty", False)
-                if emp:
+                if emp[i]:
                     try: await u.join_chat(i)
                     except: pass
                     xm = await u.get_messages((await u.get_chat(f"@{i}")).id, d)
