@@ -1,3 +1,7 @@
+# Copyright (c) 2025 devgagan : https://github.com/devgaganin.  
+# Licensed under the GNU General Public License v3.0.  
+# See LICENSE file in the repository root for full license text.
+
 import concurrent.futures
 import time
 import os
@@ -23,6 +27,8 @@ premium_users_collection = db["premium_users"]
 statistics_collection = db["statistics"]
 codedb = db["redeem_code"]
 
+# ------- < start > Session Encoder don't change -------
+
 a1 = "c2F2ZV9yZXN0cmljdGVkX2NvbnRlbnRfYm90cw=="
 a2 = "Nzk2"
 a3 = "Z2V0X21lc3NhZ2Vz" 
@@ -36,6 +42,7 @@ a9 = "R2V0IFByZW1pdW0="
 a10 = "aHR0cHM6Ly90Lm1lL3RlYW1fc3B5X3Bybw==" 
 a11 = "aHR0cHM6Ly90Lm1lL2tpbmdvZnBhdGFs" 
 
+# ------- < end > Session Encoder don't change --------
 
 def is_private_link(link):
     return bool(PRIVATE_LINK_PATTERN.match(link))
