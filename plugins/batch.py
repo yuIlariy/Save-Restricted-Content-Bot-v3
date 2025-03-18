@@ -96,7 +96,7 @@ async def get_msg(c, u, i, d, lt):
                     xm = await u.get_messages((await u.get_chat(f"@{i}")).id, d)
                 return xm
             except Exception as e:
-          print(f'Error fetching public message: {e}')
+                print(f'Error fetching public message: {e}')
                 return None
         else:
             if u:
