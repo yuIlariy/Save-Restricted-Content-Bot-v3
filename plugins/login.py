@@ -93,7 +93,7 @@ async def rem_bot_token(C, m):
     await m.reply_text("✅ Bot token removed successfully.", quote=True)
 
     
-@bot.on_message(login_in_progress & filters.text & ~filters.command([
+@bot.on_message(login_in_progress & filters.text & filters.private & ~filters.command([
     'start', 'batch', 'cancel', 'login', 'logout', 'stop', 'set', 'pay',
     'redeem', 'gencode', 'generate', 'keyinfo', 'encrypt', 'decrypt', 'keys', 'setbot', 'rembot']))
 async def handle_login_steps(client, message):
