@@ -6,13 +6,16 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import BadRequest, SessionPasswordNeeded, PhoneCodeInvalid, PhoneCodeExpired, MessageNotModified
 import logging
+import os
 from config import API_HASH, API_ID
 from shared_client import app as bot
-from utils.func import save_user_session, get_user_data, remove_user_session
+from utils.func import save_user_session, get_user_data, remove_user_session, save_user_bot, remove_user_bot
 from utils.encrypt import ecs, dcs
+from plugins.batch import UB, UC
 from utils.custom_filters import login_in_progress, set_user_step, get_user_step
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+model = "v3saver Team SPY"
 
 STEP_PHONE = 1
 STEP_CODE = 2
@@ -31,9 +34,68 @@ Example: `+12345678900`"""
         )
     login_cache[user_id] = {'status_msg': status_msg}
     
+    
+@bot.on_message(filters.command("setbot"))
+async def set_bot_token(C, m):
+    user_id = m.from_user.id
+    args = m.text.split(" ", 1)
+    if user_id in UB:
+        try:
+            await UB[user_id].stop()
+            if UB.get(user_id, None):
+                del UB[user_id]  # Remove from dictionary
+                
+            try:
+                if os.path.exists(f"user_{user_id}.session"):
+                    os.remove(f"user_{user_id}.session")
+            except Exception:
+                pass
+            
+            print(f"Stopped and removed old bot for user {user_id}")
+        except Exception as e:
+            print(f"Error stopping old bot for user {user_id}: {e}")
+            del UB[user_id]  # Remove from dictionary
+
+    if len(args) < 2:
+        await m.reply_text("⚠️ Please provide a bot token. Usage: `/setbto token`", quote=True)
+        return
+
+    bot_token = args[1].strip()
+    await save_user_bot(user_id, bot_token)
+    await m.reply_text("✅ Bot token saved successfully.", quote=True)
+    
+    
+@bot.on_message(filters.command("rembot"))
+async def rem_bot_token(C, m):
+    user_id = m.from_user.id
+    if user_id in UB:
+        try:
+            await UB[user_id].stop()
+            
+            if UB.get(user_id, None):
+                del UB[user_id]  # Remove from dictionary # Remove from dictionary
+            print(f"Stopped and removed old bot for user {user_id}")
+            try:
+                if os.path.exists(f"user_{user_id}.session"):
+                    os.remove(f"user_{user_id}.session")
+            except Exception:
+                pass
+        except Exception as e:
+            print(f"Error stopping old bot for user {user_id}: {e}")
+            if UB.get(user_id, None):
+                del UB[user_id]  # Remove from dictionary  # Remove from dictionary
+            try:
+                if os.path.exists(f"user_{user_id}.session"):
+                    os.remove(f"user_{user_id}.session")
+            except Exception:
+                pass
+    await remove_user_bot(user_id)
+    await m.reply_text("✅ Bot token removed successfully.", quote=True)
+
+    
 @bot.on_message(login_in_progress & filters.text & ~filters.command([
     'start', 'batch', 'cancel', 'login', 'logout', 'stop', 'set', 'pay',
-    'redeem', 'gencode']))
+    'redeem', 'gencode', 'generate', 'keyinfo', 'encrypt', 'decrypt', 'keys', 'setbot', 'rembot']))
 async def handle_login_steps(client, message):
     user_id = message.from_user.id
     text = message.text.strip()
@@ -55,7 +117,7 @@ async def handle_login_steps(client, message):
             await edit_message_safely(status_msg,
                 '🔄 Processing phone number...')
             temp_client = Client(f'temp_{user_id}', api_id=API_ID, api_hash
-                =API_HASH, in_memory=True)
+                =API_HASH, device_model=model, in_memory=True)
             try:
                 await temp_client.connect()
                 sent_code = await temp_client.send_code(text)
@@ -165,6 +227,7 @@ async def cancel_command(client, message):
     else:
         temp_msg = await message.reply('No active login process to cancel.')
         await temp_msg.delete(5)
+        
 @bot.on_message(filters.command('logout'))
 async def logout_command(client, message):
     user_id = message.from_user.id
@@ -198,7 +261,25 @@ Still removing from database..."""
         await remove_user_session(user_id)
         await edit_message_safely(status_msg,
             '✅ Logged out successfully!!')
+        try:
+            if os.path.exists(f"{user_id}_client.session"):
+                os.remove(f"{user_id}_client.session")
+        except Exception:
+            pass
+        if UC.get(user_id, None):
+            del UC[user_id]
     except Exception as e:
         logger.error(f'Error in logout command: {str(e)}')
+        try:
+            await remove_user_session(user_id)
+        except Exception:
+            pass
+        if UC.get(user_id, None):
+            del UC[user_id]
         await edit_message_safely(status_msg,
             f'❌ An error occurred during logout: {str(e)}')
+        try:
+            if os.path.exists(f"{user_id}_client.session"):
+                os.remove(f"{user_id}_client.session")
+        except Exception:
+            pass
