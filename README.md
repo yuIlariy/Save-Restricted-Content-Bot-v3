@@ -43,6 +43,8 @@ Please do start and max fork thanks
 - **`start`**: 🚀 Start the bot.
 - **`batch`**: 🫠 Extract in bulk.
 - **`login`**: 🔑 Get into the bot.
+- **`single`**: Process single link.
+- **`setbot`**: add your custome bot.
 - **`logout`**: 🚪 Get out of the bot.
 - **`adl`**: 👻 Download audio from 30+ sites.
 - **`dl`**: 💀 Download videos from 30+ sites.
@@ -50,6 +52,7 @@ Please do start and max fork thanks
 - **`status`**: ⌛ Get your plan details.
 - **`add`**: ➕ Add user to premium.
 - **`rem`**: ➖ Remove user from premium.
+- **`rembot`**: remove your custome bot.
 - **`session`**: 🧵 Generate Pyrogramv2 session.
 - **`settings`**: ⚙️ Personalize settings.
 - **`stats`**: 📊 Get stats of the bot.
