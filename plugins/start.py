@@ -6,7 +6,7 @@ from shared_client import app
 from pyrogram import filters
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
-from config import LOG_GROUP, OWNER_ID, FORCE_SUB
+from config import LOG_GROUP, OWNER_ID, FORCE_SUB, OWNER_ID
 
 async def subscribe(app, message):
     if FORCE_SUB:
