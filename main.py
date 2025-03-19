@@ -3,11 +3,10 @@
 # See LICENSE file in the repository root for full license text.
 
 import asyncio
+from shared_client import start_client
 import importlib
 import os
 import sys
-from shared_client import start_client
-
 
 async def load_and_run_plugins():
     await start_client()
@@ -18,26 +17,24 @@ async def load_and_run_plugins():
         module = importlib.import_module(f"plugins.{plugin}")
         if hasattr(module, f"run_{plugin}_plugin"):
             print(f"Running {plugin} plugin...")
-            await getattr(module, f"run_{plugin}_plugin")() 
-
+            await getattr(module, f"run_{plugin}_plugin")()  
 
 async def main():
     await load_and_run_plugins()
-
+    while True:
+        await asyncio.sleep(1)  
 
 if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
     print("Starting clients ...")
-
-    loop = asyncio.new_event_loop()  # Fix kr diya
-    asyncio.set_event_loop(loop)
-
     try:
         loop.run_until_complete(main())
-        loop.run_forever()  # now run forever directly 
     except KeyboardInterrupt:
         print("Shutting down...")
     except Exception as e:
-        print(f"Error: {e}")
         sys.exit(1)
     finally:
-        loop.stop()  # console me error nhi bharega
+        try:
+            loop.close()
+        except Exception:
+            pass
