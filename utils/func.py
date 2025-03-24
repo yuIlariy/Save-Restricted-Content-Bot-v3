@@ -11,7 +11,7 @@ import logging
 import asyncio
 from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorClient
-from config import MONGO_URI, DB_NAME
+from config import MONGO_DB, DB_NAME
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
