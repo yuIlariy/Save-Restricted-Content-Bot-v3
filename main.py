@@ -32,6 +32,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Shutting down...")
     except Exception as e:
+        print(e)
         sys.exit(1)
     finally:
         try:
