@@ -80,6 +80,16 @@
       "description": "Limit for premium users (in MB or desired unit)",
       "value": "500",
       "required": false
+    },
+    "ADMIN_CONTACT": {
+      "description": "type admin contact link",
+      "value": "https://t.me/kingofpatal",
+      "required": true
+    },
+    "JOIN_LINK": {
+      "description": "type join channel link which comes on /start",
+      "value": "https://t.me/team_spy_pro",
+      "required": true
     }
   },
   "buildpacks": [
