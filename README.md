@@ -36,6 +36,7 @@ Please do start and max fork thanks
 - ~~ads setup shorlink ads token system~~
 - ~~fast uploader via `SpyLib` using Telethon modules and `mautrix bridge repo`~~ 
 - Directly upload to `topic` in any topic enabled group
+- real time download and uplaod progress, support chats, text , audio, video , video note sticker everything
 
   
 ## ⚡ Commands
