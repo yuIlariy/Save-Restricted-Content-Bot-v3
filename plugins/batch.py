@@ -2,7 +2,7 @@
 # Licensed under the GNU General Public License v3.0.  
 # See LICENSE file in the repository root for full license text.
 
-import os, re, time, asyncio
+import os, re, time, asyncio, json, asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import UserNotParticipant
@@ -14,9 +14,6 @@ from plugins.settings import rename_file
 from plugins.start import subscribe as sub
 from utils.custom_filters import login_in_progress
 from utils.encrypt import dcs
-import os
-import json
-import asyncio
 from typing import Dict, Any, Optional
 
 
@@ -25,6 +22,9 @@ Z, P, UB, UC, emp = {}, {}, {}, {}, {}
 
 ACTIVE_USERS = {}
 ACTIVE_USERS_FILE = "active_users.json"
+
+def sanitize(filename):
+    return re.sub(r'[<>:"/\\|?*\']', '_', filename).strip(" .")[:255]
 
 def load_active_users():
     try:
@@ -223,8 +223,15 @@ async def process_msg(c, u, m, d, lt, uid, i):
             st = time.time()
             p = await c.send_message(d, 'Downloading...')
             
-            f = await u.download_media(m, progress=prog, progress_args=(c, d, p.id, st))
-                
+            if m.video:
+                c_name = sanitize(m.video.file_name)
+            elif m.audio:
+                c_name = sanitize(m.audio.file_name)
+            elif m.document:
+                c_name = sanitize(m.document.file_name)
+
+            f = await u.download_media(m, file_name=c_name, progress=prog, progress_args=(sender, lg, p.id, st))
+            
             if not f:
                 await c.edit_message_text(d, p.id, 'Failed.')
                 return 'Failed.'
