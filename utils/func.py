@@ -107,12 +107,12 @@ async def save_user_data(user_id, key, value):
         {"$set": {key: value}},
         upsert=True
     )
-    print(users_collection)
+   # print(users_collection)
 
 
 async def get_user_data_key(user_id, key, default=None):
     user_data = await users_collection.find_one({"user_id": int(user_id)})
-    print(f"Fetching key '{key}' for user {user_id}: {user_data}")
+  #  print(f"Fetching key '{key}' for user {user_id}: {user_data}")
     return user_data.get(key, default) if user_data else default
 
 
@@ -121,7 +121,7 @@ async def get_user_data(user_id):
         user_data = await users_collection.find_one({"user_id": user_id})
         return user_data
     except Exception as e:
-        logger.error(f"Error retrieving user data for {user_id}: {e}")
+   #     logger.error(f"Error retrieving user data for {user_id}: {e}")
         return None
 
 
