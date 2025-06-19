@@ -223,15 +223,28 @@ async def process_msg(c, u, m, d, lt, uid, i):
             
             st = time.time()
             p = await c.send_message(d, 'Downloading...')
-            
-            if m.video:
-                c_name = sanitize(m.video.file_name)
-            elif m.audio:
-                c_name = sanitize(m.audio.file_name)
-            elif m.document:
-                c_name = sanitize(m.document.file_name)
 
-            f = await u.download_media(m, progress=prog, progress_args=(c, d, p.id, st))
+            c_name = f"{time.time()}"
+            if m.video:
+                file_name = m.video.file_name
+                if not file_name:
+                    file_name = f"{time.time()}.mp4"
+                    c_name = sanitize(file_name)
+            elif m.audio:
+                file_name = m.audio.file_name
+                if not file_name:
+                    file_name = f"{time.time()}.mp3"
+                    c_name = sanitize(file_name)
+            elif m.document:
+                file_name = m.document.file_name
+                if not file_name:
+                    file_name = f"{time.time()}"
+                    c_name = sanitize(file_name)
+            elif m.photo:
+                file_name = f"{time.time()}.jpg"
+                c_name = sanitize(file_name)
+    
+            f = await u.download_media(m, file_name=c_name, progress=prog, progress_args=(c, d, p.id, st))
             
             if not f:
                 await c.edit_message_text(d, p.id, 'Failed.')
