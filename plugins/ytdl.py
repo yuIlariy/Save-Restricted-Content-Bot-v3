@@ -89,7 +89,7 @@ async def process_audio(client, event, url, cookies_env_var=None):
             temp_cookie_path = temp_cookie_file.name
  
     start_time = time.time()
-    random_filename = f"@team_spy_pro_{event.sender_id}"
+    random_filename = f"@xspes_{event.sender_id}"
     download_path = f"{random_filename}.mp3"
  
     ydl_opts = {
@@ -120,8 +120,8 @@ async def process_audio(client, event, url, cookies_env_var=None):
                 except Exception:
                     pass
                 audio_file.tags["TIT2"] = TIT2(encoding=3, text=title)
-                audio_file.tags["TPE1"] = TPE1(encoding=3, text="Team SPY")
-                audio_file.tags["COMM"] = COMM(encoding=3, lang="eng", desc="Comment", text="Processed by Team SPY")
+                audio_file.tags["TPE1"] = TPE1(encoding=3, text="NAm")
+                audio_file.tags["COMM"] = COMM(encoding=3, lang="eng", desc="Comment", text="Processed by NAm")
  
                 thumbnail_url = info_dict.get('thumbnail')
                 if thumbnail_url:
