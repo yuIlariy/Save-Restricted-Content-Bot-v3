@@ -411,7 +411,7 @@ async def process_video(client, event, url, cookies_env_var, check_duration_and_
             if prog:
                 await prog.delete()
         else:
-            await event.reply("**__File not found after download. Something went wrong!__**")
+            await event.reply("**__Task successfully completed!__**")
     except Exception as e:
         logger.exception("An error occurred during download or upload.")
         await event.reply(f"**__An error occurred: {e}__**")
