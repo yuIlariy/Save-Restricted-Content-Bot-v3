@@ -326,7 +326,7 @@ async def process_video(client, event, url, cookies_env_var, check_duration_and_
     logger.info(f"Generated random download path: {download_path}")
  
      
-    temp_cookie_path = None
+    temp_cookie_path = "/root/cookies.txt"
     if cookies:
         with tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.txt') as temp_cookie_file:
             temp_cookie_file.write(cookies)
